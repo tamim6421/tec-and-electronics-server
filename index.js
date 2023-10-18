@@ -50,13 +50,37 @@ async function run() {
 
     
 
-    // use get operation form update data 
+    // use get operation to get data for update data 
     app.get('/products/:id', async(req, res) =>{
         const id = req.params.id 
         const query = {_id: new ObjectId(id)}
         const result = await productCollection.findOne(query)
         res.send(result)
     })
+
+
+    // put operation for update 
+    app.put('/products/:id', async(req, res) =>{
+        const id = req.params.id 
+        const product = req.body
+        const filter = {_id: new ObjectId(id)}
+        const options = { upsert: true };
+        const updateProduct ={
+            $set:{
+                name:product.name,
+                 bName:product.bName,
+                 photo:product.photo,
+                 type:product.type,
+                 price:product.price,
+                 description:product.description,
+                 rating:product.rating
+
+            }
+        }
+        const result = await productCollection.updateOne(filter, updateProduct, options)
+        res.send(result)
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
