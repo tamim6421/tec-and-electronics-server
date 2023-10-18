@@ -1,6 +1,6 @@
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express')
 require('dotenv').config()
 const cors = require('cors')
@@ -31,8 +31,32 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const productCollection = client.db("productDB").collection("products")
+ 
+    // post product in database
+    app.post('/products', async(req, res) =>{
+        const users = req.body 
+        console.log(users)
+        const result = await productCollection.insertOne(users)
+        res.send(result)
+    } )
 
+    // read data from database 
+    app.get('/products', async(req, res) =>{
+        const query = productCollection.find()
+        const result = await query.toArray()
+        res.send(result)
+    })
 
+    
+
+    // use get operation form update data 
+    app.get('/products/:id', async(req, res) =>{
+        const id = req.params.id 
+        const query = {_id: new ObjectId(id)}
+        const result = await productCollection.findOne(query)
+        res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
