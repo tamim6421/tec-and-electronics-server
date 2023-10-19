@@ -83,6 +83,8 @@ async function run() {
     })
 
 
+
+
     // added add to cart data to the database 
     app.post('/carts', async (req, res) =>{
       const users = req.body 
@@ -91,9 +93,15 @@ async function run() {
       res.send(result)
     })
 
-
+    // read the data 
+    app.get('/carts', async(req, res) =>{
+      const cursor = addToCart.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
 
     
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
