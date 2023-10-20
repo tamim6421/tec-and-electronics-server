@@ -88,7 +88,9 @@ async function run() {
     // added add to cart data to the database 
     app.post('/carts', async (req, res) =>{
       const users = req.body 
-      console.log(users)
+      // console(users)
+      delete users._id
+      // console.log(users)
       const result = await addToCart.insertOne(users)
       res.send(result)
     })
@@ -100,7 +102,15 @@ async function run() {
       res.send(result)
     })
 
-    
+    app.delete('/carts/:id', async(req, res) =>{
+      const id = req.params.id 
+      console.log('delete id', id)
+      const query = {_id: new ObjectId(id)}
+      const result = await addToCart.deleteOne(query)
+      res.send(result)
+    })
+
+ 
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
